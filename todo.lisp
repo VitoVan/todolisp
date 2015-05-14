@@ -1,5 +1,6 @@
 ;;加载基础需求
-;;在sbcl启动的bat里设置 chcp 65001
+;;If Windows,在sbcl启动的bat里设置 chcp 65001
+(load "~/quicklisp/setup.lisp")
 (setf sb-impl::*default-external-format* :UTF-8)
 (ql:quickload '(hunchentoot clsql clsql-sqlite3 cl-json))
 
@@ -203,9 +204,9 @@ STREAM (or to *JSON-OUTPUT*)."
 
 
 ;;示例数据
-(add-item "邢双强" "检查Android程序健壮性")
-(add-item "张有辉" "检查油库程序接口可靠性")
-(add-item "张帅" "检查云端程序可靠性")
-(add-item "范卿麟" "编写TODO程序")
+(add-item "張三" "检查Android程序健壮性")
+(add-item "李四" "检查油库程序接口可靠性")
+(add-item "王五" "检查云端程序可靠性")
+(add-item "趙六" "编写TODO程序")
 
 (fmakunbound 'itessms)
