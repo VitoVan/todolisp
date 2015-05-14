@@ -1,0 +1,17 @@
+*:not(i){
+    font-family:"Microsoft YaHei","微软雅黑", Helvetica, Tahoma, Arial , sans-serif ! important;
+}
+body{
+    height:auto;
+}
+.container{
+    padding: 0 5%;
+}
+.item-template{
+    display:none;
+}
+.add{  
+    position: absolute;
+    right: 0px;
+    bottom: 6px;
+}
