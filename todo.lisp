@@ -1,6 +1,6 @@
 ;;加载基础需求
 ;;If Windows,在sbcl启动的bat里设置 chcp 65001
-(load "~/quicklisp/setup.lisp")
+;;(load "~/quicklisp/setup.lisp")
 (setf sb-impl::*default-external-format* :UTF-8)
 (ql:quickload '(hunchentoot clsql clsql-sqlite3 cl-json))
 
@@ -12,10 +12,10 @@
   "Write the JSON representation (Object) of the STANDARD-DB-OBJECT O to
 STREAM (or to *JSON-OUTPUT*)."
   (with-object (stream)
-	       (map-slots (lambda(key value)
-			    (if (not (equal key 'clsql-sys::view-database))
-				(as-object-member (key stream)
-						  (encode-json value stream)))) o)))
+			   (map-slots (lambda(key value)
+							(if (not (equal key 'clsql-sys::view-database))
+								(as-object-member (key stream)
+												  (encode-json value stream)))) o)))
 
 (defpackage todo
   (:use :cl :hunchentoot :clsql :json))
@@ -34,14 +34,14 @@ STREAM (or to *JSON-OUTPUT*)."
 ;;对象定义部分
 (def-view-class setting()
   ((key :accessor key
-	:db-kind :key
-	:db-constraints :not-null
-	:type (string 30)
-	:initarg :key)
+		:db-kind :key
+		:db-constraints :not-null
+		:type (string 30)
+		:initarg :key)
    (value :accessor value
-	  :db-constraints :not-null
-	  :type (string 500)
-	  :initarg :value)))
+		  :db-constraints :not-null
+		  :type (string 500)
+		  :initarg :value)))
 (create-view-from-class 'setting)
 
 (def-view-class item()
@@ -51,20 +51,20 @@ STREAM (or to *JSON-OUTPUT*)."
        :type integer
        :initarg :id)
    (content :accessor content
-	    :db-constraints :not-null
-	    :type (string 500)
-	    :initarg :content)
+			:db-constraints :not-null
+			:type (string 500)
+			:initarg :content)
    (people :accessor people
-	   :db-constraints :not-null
-	   :type (string 30)
-	   :initarg :people)
+		   :db-constraints :not-null
+		   :type (string 30)
+		   :initarg :people)
    (state :accessor state
-	  :db-constraints :not-null
-	  :type integer
-	  :initform 1)
+		  :db-constraints :not-null
+		  :type integer
+		  :initform 1)
    (atime :accessor atime
-	  :type integer
-	  :initform (get-universal-time))))
+		  :type integer
+		  :initform (get-universal-time))))
 (create-view-from-class 'item)
 
 
@@ -72,14 +72,14 @@ STREAM (or to *JSON-OUTPUT*)."
 (defmethod gen-last-item-id()
   (let ((count-setting (car (first (select 'setting :where [= [slot-value 'setting 'key] "item-count"])))) (count 1))
     (if count-setting 
-	(setf count (+ 1 (parse-integer (value count-setting)))))
+		(setf count (+ 1 (parse-integer (value count-setting)))))
     (update-items-count count)
     count
     ))
 (defmethod update-items-count(count)
   (let ((count-setting (car (first (select 'setting :where [= [slot-value 'setting 'key] "item-count"])))))
     (if count-setting
-	(setf (value count-setting) (write-to-string count))
+		(setf (value count-setting) (write-to-string count))
       (setf count-setting (make-instance 'setting :key "item-count" :value (write-to-string count))))
     (update-records-from-instance count-setting)))
 
@@ -87,14 +87,14 @@ STREAM (or to *JSON-OUTPUT*)."
 (defmethod close-item(id)
   "关闭任务"
   (update-records [item] 
-		  :av-pairs'((state 0))
-		  :where [= [id] id]))
+				  :av-pairs'((state 0))
+				  :where [= [id] id]))
 
 (defmethod open-item(id)
   "开启任务"
   (update-records [item] 
-		  :av-pairs'((state 1))
-		  :where [= [id] id]))
+				  :av-pairs'((state 1))
+				  :where [= [id] id]))
 
 (defmethod add-item(people content)
   "新增任务"
@@ -103,16 +103,16 @@ STREAM (or to *JSON-OUTPUT*)."
 (defmethod update-item(id people content)
   "更新任务"
   (update-records [item] 
-		  :av-pairs'((people people)
-			     (content content))
-		  :where [= [id] id]))
+				  :av-pairs `((people ,people)
+							 (content ,content))
+				  :where [= [id] id]))
 
 (defmethod todos()
   "所有未完成"
   (mapcar #'car
-	   (select 'item 
-		   :where [= [state] 1]
-		   :order-by '(([id] :desc) ([atime] :desc)))))
+		  (select 'item 
+				  :where [= [state] 1]
+				  :order-by '(([id] :desc) ([atime] :desc)))))
 
 (defmethod items(&key (page 1) (state nil))
   "任务列表 - 全部"
@@ -120,16 +120,16 @@ STREAM (or to *JSON-OUTPUT*)."
       (setf page 1)
     (setf page (parse-integer page)))
   (mapcar #'car 
-	  (if state
-	      (select 'item 
-		      :where [= [state] state] 
-		      :order-by '(([id] :desc) ([atime] :desc))
-		      :limit *page-size*
-		      :offset (* (- page 1) *page-size*))
-	    (select 'item 
-		    :order-by  '(([id] :desc) ([atime] :desc))
-		    :limit *page-size*
-		    :offset (* (- page 1) *page-size*)))))
+		  (if state
+			  (select 'item 
+					  :where [= [state] state] 
+					  :order-by '(([id] :desc) ([atime] :desc))
+					  :limit *page-size*
+					  :offset (* (- page 1) *page-size*))
+			(select 'item 
+					:order-by  '(([id] :desc) ([atime] :desc))
+					:limit *page-size*
+					:offset (* (- page 1) *page-size*)))))
 
 (defmethod item-by-id(id)
   "根据ID查询单个任务"
@@ -161,10 +161,10 @@ STREAM (or to *JSON-OUTPUT*)."
   "任务列表-分页"
   (setf (content-type*) "application/json")
   (let ((state (get-parameter "state"))
-	(page (get-parameter "page")))
+		(page (get-parameter "page")))
     (encode-json-to-string (items 
-			    :state state 
-			    :page page))))
+							:state state 
+							:page page))))
 
 (defmethod controller-todos-all()
   "所有未完成任务"
@@ -176,12 +176,20 @@ STREAM (or to *JSON-OUTPUT*)."
   (let ((people (post-parameter "people")) (content (post-parameter "content")))
     (add-item people content)))
 
-(defmethod controller-items-update()
+(defmethod controller-item-update()
   "修改任务"
   (let ((people (post-parameter "people"))
-	(content (post-parameter "content"))
-	(id (post-parameter "id")))
+		(content (post-parameter "content"))
+		(id (post-parameter "id")))
     (update-item id people content)))
+
+(defmethod handle-request :before ((acceptor acceptor) (request request))
+  "登录"
+  (let ((username (nth-value 0 (authorization)))
+		(password (nth-value 1 (authorization))))
+	(if (not (and (equal username "jjj")
+				  (equal password "jjj")))
+		(require-authorization))))
 
 
 ;;设置dispatch-table

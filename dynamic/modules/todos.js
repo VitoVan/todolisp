@@ -2,7 +2,8 @@ Application.addModule('todos', function(context) {
     'use strict';
     var dataService,moduleEl,currentItems,hideClosed,filterText;
     return {
-		messages: ['todoReceived','searchFilterChange','refreshRunning','itemAdded'],
+		messages: ['todoReceived','searchFilterChange','refreshRunning','itemAdded','itemDataChanged'],
+		behaviors: ['list'],
 		onmessage: function(name, data) {
 			if (name === 'todoReceived') {
 				currentItems = data;
@@ -12,6 +13,7 @@ Application.addModule('todos', function(context) {
 				filterText = data;
 				this.filterList(filterText);
 			}else if(name === 'refreshRunning' || name === 'itemAdded'){
+				$('div[data-tab="running"]').addClass('loading');
 				dataService.getTodos(context);
 			}
 		},
@@ -84,5 +86,5 @@ Application.addModule('todos', function(context) {
 			this.clearList();
 			this.appendList(items);
 		}
-    };
+	};
 });

@@ -2,7 +2,8 @@ Application.addModule('items', function(context) {
     'use strict';
     var dataService,moduleEl,currentItems;
     return {
-		messages: ['dataReceived','moreDataReceived','itemChanged','refreshHistory','itemAdded'],
+		messages: ['dataReceived','moreDataReceived','itemDataChanged','refreshHistory','itemAdded'],
+		behaviors: ['list'],
 		onmessage: function(name, data) {
 			if (name === 'dataReceived') {
 				currentItems = data;
@@ -13,6 +14,7 @@ Application.addModule('items', function(context) {
 					this.appendList(data);
 				}
 			}else if(name === 'refreshHistory' || name === 'itemAdded'){
+				$('div[data-tab="history"]').addClass('loading');
 				dataService.getPage1Items(context);
 			}
 		},

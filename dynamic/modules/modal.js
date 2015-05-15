@@ -1,17 +1,36 @@
 Application.addModule('modal', function(context) {
     'use strict';
-    var dataService,moduleEl;
+    var dataService,moduleEl,isUpdate;
     return {
-		messages: ['addButtonClick'],
-		onmessage: function(){
-			$('.modal').modal('show');
+		messages: ['addButtonClick','updateButtonClick'],
+		onmessage: function(name, data){
+			if(name === 'addButtonClick'){
+				isUpdate = false;
+				this.clearData();
+				$('.modal').modal('show');
+			}else if(name === 'updateButtonClick'){
+				isUpdate = true;
+				this.setData(data);
+				$('.modal').modal('show');
+			}
 		},
 		init: function() {
+			isUpdate = false;
 			dataService = context.getService('data');
 			moduleEl = context.getElement();
 		},
 		destroy: function() {
 			dataService = null;
+		},
+		clearData: function(){
+			moduleEl.querySelector('input[type="hidden"][name="id"]').value = '';
+			moduleEl.querySelector('input[type="text"][name="people"]').value = '';
+			moduleEl.querySelector('input[type="text"][name="content"]').value = '';
+		},
+		setData: function(data){
+			moduleEl.querySelector('input[type="hidden"][name="id"]').value = data.id;
+			moduleEl.querySelector('input[type="text"][name="people"]').value = data.people;
+			moduleEl.querySelector('input[type="text"][name="content"]').value = data.content;
 		},
 		onkeydown: function(event, element, elementType){
 			if(event.keyCode === 13 || event.whitch === 13){
@@ -20,10 +39,15 @@ Application.addModule('modal', function(context) {
 		},
 		onclick: function(event, element, elementType){
 			if(elementType === 'confirm'){
+				var id = $.trim(moduleEl.querySelector('input[type="hidden"][name="id"]').value);
 				var people = $.trim(moduleEl.querySelector('input[type="text"][name="people"]').value);
 				var content = $.trim(moduleEl.querySelector('input[type="text"][name="content"]').value);
 				if(!$.isEmptyObject(people) && !$.isEmptyObject(content)){
-					dataService.addItem(context, people, content);
+					if(isUpdate){
+						dataService.updateItem(context, people, content, id);
+					}else{
+						dataService.addItem(context, people, content);
+					}
 				}
 			}
 		}
