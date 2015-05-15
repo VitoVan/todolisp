@@ -223,9 +223,9 @@ STREAM (or to *JSON-OUTPUT*)."
 
 
 ;;示例数据
-(add-item "張三" "检查Android程序健壮性")
-(add-item "李四" "检查油库程序接口可靠性")
-(add-item "王五" "检查云端程序可靠性")
-(add-item "趙六" "编写TODO程序")
+;;(add-item "張三" "检查Android程序健壮性")
+;;(add-item "李四" "检查油库程序接口可靠性")
+;;(add-item "王五" "检查云端程序可靠性")
+;;(add-item "趙六" "编写TODO程序")
 
-(fmakunbound 'itessms)
+;;(fmakunbound 'itessms)

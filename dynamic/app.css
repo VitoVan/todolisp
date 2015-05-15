@@ -5,10 +5,15 @@ body{
     height:auto;
 }
 .container{
-    padding: 0 5%;
+    padding: 1% 5%;
+}
+@media only screen and (max-width: 767px){	
+	.ui.table:not(.unstackable) tr.item-template, .ui.table:not(.unstackable) tr.item-template>td, .ui.table:not(.unstackable) tr.item-template>th{
+		display:none !important;
+	}
 }
 .item-template{
-    display:none;
+	display:none !important;
 }
 .add{  
     position: absolute;
