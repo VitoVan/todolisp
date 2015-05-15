@@ -20,7 +20,25 @@ STREAM (or to *JSON-OUTPUT*)."
 (defpackage todo
   (:use :cl :hunchentoot :clsql :json))
 (in-package :todo)
-(start (make-instance 'hunchentoot:easy-acceptor :port 8082))
+;;启动服务
+(setf *show-lisp-errors-p* t)
+(start 
+ (make-instance 'hunchentoot:easy-acceptor 
+				:port 8082 
+				:access-log-destination "log/access.log"
+				:message-log-destination "log/message.log"
+				:error-template-directory  "www/errors/"
+				:document-root "www"))
+
+(defmethod handle-request :before ((acceptor acceptor) (request request))
+  "登录"
+  (let ((username (nth-value 0 (authorization)))
+		(password (nth-value 1 (authorization))))
+	(if (not (and (equal username "yhtzd")
+				  (equal password "sxpm")))
+		(require-authorization))))
+
+
 ;;数据库设置
 (connect "todo.db" :database-type :sqlite3)
 (locally-enable-sql-reader-syntax)
@@ -104,7 +122,7 @@ STREAM (or to *JSON-OUTPUT*)."
   "更新任务"
   (update-records [item] 
 				  :av-pairs `((people ,people)
-							 (content ,content))
+							  (content ,content))
 				  :where [= [id] id]))
 
 (defmethod todos()
@@ -183,13 +201,6 @@ STREAM (or to *JSON-OUTPUT*)."
 		(id (post-parameter "id")))
     (update-item id people content)))
 
-(defmethod handle-request :before ((acceptor acceptor) (request request))
-  "登录"
-  (let ((username (nth-value 0 (authorization)))
-		(password (nth-value 1 (authorization))))
-	(if (not (and (equal username "jjj")
-				  (equal password "jjj")))
-		(require-authorization))))
 
 
 ;;设置dispatch-table
@@ -203,8 +214,8 @@ STREAM (or to *JSON-OUTPUT*)."
        (create-regex-dispatcher "^/item/open$" 'controller-item-open)
        (create-regex-dispatcher "^/item/close$" 'controller-item-close)
        (create-regex-dispatcher "^/item/update$" 'controller-item-update)
-       (create-folder-dispatcher-and-handler "/static/" #p"./static/")
-       (create-folder-dispatcher-and-handler "/dynamic/" #p"./dynamic/")
+       (create-folder-dispatcher-and-handler "/static/" #p"static/")
+       (create-folder-dispatcher-and-handler "/dynamic/" #p"dynamic/")
        ))
 
 
