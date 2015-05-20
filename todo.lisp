@@ -20,6 +20,7 @@ STREAM (or to *JSON-OUTPUT*)."
 (defpackage todo
   (:use :cl :hunchentoot :clsql :json))
 (in-package :todo)
+
 ;;启动服务
 (setf *show-lisp-errors-p* t)
 (start 
@@ -29,6 +30,16 @@ STREAM (or to *JSON-OUTPUT*)."
 				:message-log-destination "log/message.log"
 				:error-template-directory  "www/errors/"
 				:document-root "www"))
+
+;;时间转换 http://lisptips.com/post/11649360174/the-common-lisp-and-unix-epochs
+(defvar *unix-epoch-difference*
+  (encode-universal-time 0 0 0 1 1 1970 0))
+(defun universal-to-unix-time(universal-time)
+  (- universal-time *unix-epoch-difference*))
+(defun unix-to-universal-time(unix-time)
+  (+ unix-time *unix-epoch-difference*))
+(defun get-unix-time()
+  (universal-to-unix-time (get-universal-time)))
 
 (defmethod handle-request :before ((acceptor acceptor) (request request))
   "登录"
@@ -44,9 +55,9 @@ STREAM (or to *JSON-OUTPUT*)."
 (locally-enable-sql-reader-syntax)
 (setf *default-caching* nil)
 (defvar *page-size* 10)
-;;建表
-(drop-table [item] :if-does-not-exist :ignore)
-(drop-table [setting] :if-does-not-exist :ignore)
+;;重新建表
+;;(drop-table [item] :if-does-not-exist :ignore)
+;;(drop-table [setting] :if-does-not-exist :ignore)
 
 
 ;;对象定义部分
@@ -60,7 +71,7 @@ STREAM (or to *JSON-OUTPUT*)."
 		  :db-constraints :not-null
 		  :type (string 500)
 		  :initarg :value)))
-(create-view-from-class 'setting)
+;;(create-view-from-class 'setting)
 
 (def-view-class item()
   ((id :reader id
@@ -82,8 +93,8 @@ STREAM (or to *JSON-OUTPUT*)."
 		  :initform 1)
    (atime :accessor atime
 		  :type integer
-		  :initform (get-universal-time))))
-(create-view-from-class 'item)
+		  :initform (get-unix-time))))
+;;(create-view-from-class 'item)
 
 
 ;;LOGIC ====== 业务方法
