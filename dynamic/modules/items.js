@@ -60,6 +60,7 @@ Application.addModule('items', function(context) {
 			newItemEl.querySelector('[name="id"]').innerHTML = item.id;
 			newItemEl.querySelector('[name="content"]').innerHTML = item.content;
 			newItemEl.querySelector('[name="atime"]').innerHTML = new Date(item.atime*1000).format('yyyy-MM-dd hh:mm:ss');
+			newItemEl.querySelector('[name="days"]').innerHTML = item.days;
 			newItemEl.querySelector('[name="people"]').innerHTML = item.people;
 			newItemEl.querySelector('[name="state"]').checked = item.state;
 			$(newItemEl).removeClass('item-template');

@@ -47,12 +47,13 @@
 
 		  <table class="ui celled striped table">
 			<thead>
-			  <tr><th>#</th><th>内容</th><th>添加时间</th><th>责任人</th><th>状态</th></tr>
+			  <tr><th>#</th><th>内容</th><th>用天</th><th>添加时间</th><th>责任人</th><th>状态</th></tr>
 			</thead>
 			<tbody data-module="todos">
 			  <tr class="item-template" data-type="item">
 				<td class="left aligned collapsing" name="id">123</td>
 				<td name="content">内容...</td>
+				<td name="days" class="center aligned collapsing">6</td>
 				<td name="atime" class="right aligned collapsing">2015-05-12</td>
 				<td name="people" class="right aligned collapsing">张三</td>
 				<td class="right aligned collapsing">
@@ -70,12 +71,13 @@
 		<div class="ui bottom attached tab segment" data-tab="history">
 		  <table class="ui celled striped table">
 			<thead>
-			  <tr><th>#</th><th>内容</th><th>添加时间</th><th>责任人</th><th>状态</th></tr>
+			  <tr><th>#</th><th>内容</th><th>用天</th><th>添加时间</th><th>责任人</th><th>状态</th></tr>
 			</thead>
 			<tbody data-module="items">
 			  <tr class="item-template" data-type="item">
 				<td class="left aligned collapsing" name="id">123</td>
 				<td name="content">内容...</td>
+				<td name="days" class="center aligned collapsing">6</td>
 				<td name="atime" class="right aligned collapsing">2015-05-12</td>
 				<td name="people" class="right aligned collapsing">张三</td>
 				<td class="right aligned collapsing">
@@ -105,8 +107,15 @@
 	  <i class="close icon"></i>
 	  <div class="content">
 		<div class="ui form">
-		  <div class="six wide field">
-			<input type="text" name="people" placeholder="负责人"/>
+		  <div class="fields">
+			<div class="six wide field">
+			  <label>负责人</label>
+			  <input type="text" name="people" placeholder="负责人"/>
+			</div>
+			<div class="six wide field">
+			  <label>所需天数</label>
+			  <input type="text" name="days" placeholder="所需天数" value="2"/>
+			</div>
 		  </div>
 		  <div class="field">
 			<input type="text" name="content" placeholder="任务描述"/>

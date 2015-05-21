@@ -31,17 +31,17 @@ Application.addService('data', function(application) {
 				context.broadcast('itemStateChanged', 'close');
 			});
 		},
-		addItem: function(context,people,content){
-			$.post('/items/add',{people: people, content: content},function(data){
+		addItem: function(context,people,content, days){
+			$.post('/items/add',{people: people, content: content, days: days},function(data){
 				$('.modal').modal('hide');
 				context.broadcast('itemAdded', data);
 			});
 		},
-		updateItem: function(context, people, content, id){
+		updateItem: function(context, people, content, id, days){
 			id = parseInt(id);
-			$.post('/item/update',{people: people, content: content, id: id},function(data){
+			$.post('/item/update',{people: people, content: content, id: id, days: days},function(data){
 				$('.modal').modal('hide');
-				context.broadcast('itemDataChanged', {id: id, people: people, content: content});
+				context.broadcast('itemDataChanged', {id: id, people: people, content: content, days: days});
 			});
 		}
     };

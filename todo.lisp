@@ -93,7 +93,11 @@ STREAM (or to *JSON-OUTPUT*)."
 		  :initform 1)
    (atime :accessor atime
 		  :type integer
-		  :initform (get-unix-time))))
+		  :initform (get-unix-time))
+   (days :accessor days
+		  :db-constraints :not-null
+		  :type integer
+		  :initarg :days)))
 ;;(create-view-from-class 'item)
 
 
@@ -125,15 +129,16 @@ STREAM (or to *JSON-OUTPUT*)."
 				  :av-pairs'((state 1))
 				  :where [= [id] id]))
 
-(defmethod add-item(people content)
+(defmethod add-item(people content days)
   "新增任务"
-  (update-records-from-instance (make-instance 'item :people people :content content :id (gen-last-item-id))))
+  (update-records-from-instance (make-instance 'item :people people :content content :id (gen-last-item-id) :days days)))
 
-(defmethod update-item(id people content)
+(defmethod update-item(id people content days)
   "更新任务"
   (update-records [item] 
 				  :av-pairs `((people ,people)
-							  (content ,content))
+							  (content ,content)
+							  (days ,days))
 				  :where [= [id] id]))
 
 (defmethod todos()
@@ -202,15 +207,16 @@ STREAM (or to *JSON-OUTPUT*)."
 
 (defmethod controller-items-add()
   "新增任务"
-  (let ((people (post-parameter "people")) (content (post-parameter "content")))
-    (add-item people content)))
+  (let ((people (post-parameter "people")) (content (post-parameter "content")) (days (post-parameter "days")))
+    (add-item people content (parse-integer days))))
 
 (defmethod controller-item-update()
   "修改任务"
   (let ((people (post-parameter "people"))
 		(content (post-parameter "content"))
-		(id (post-parameter "id")))
-    (update-item id people content)))
+		(id (post-parameter "id"))
+		(days (post-parameter "days")))
+    (update-item id people content (parse-integer days))))
 
 
 
@@ -234,9 +240,11 @@ STREAM (or to *JSON-OUTPUT*)."
 
 
 ;;示例数据
-;;(add-item "張三" "检查Android程序健壮性")
-;;(add-item "李四" "检查油库程序接口可靠性")
-;;(add-item "王五" "检查云端程序可靠性")
+;;(add-item "張三" "检查Android程序健壮性" 2)
+;;(add-item "李四" "检查油库程序接口可靠性" 3)
+;;(add-item "王老五" "检查云端程序可靠性" 3)
 ;;(add-item "趙六" "编写TODO程序")
 
 ;;(fmakunbound 'itessms)
+
+;;(query "alter table item add DAYS integer")

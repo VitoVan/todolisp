@@ -26,11 +26,13 @@ Application.addModule('modal', function(context) {
 			moduleEl.querySelector('input[type="hidden"][name="id"]').value = '';
 			moduleEl.querySelector('input[type="text"][name="people"]').value = '';
 			moduleEl.querySelector('input[type="text"][name="content"]').value = '';
+			moduleEl.querySelector('input[type="text"][name="days"]').value = '';
 		},
 		setData: function(data){
 			moduleEl.querySelector('input[type="hidden"][name="id"]').value = data.id;
 			moduleEl.querySelector('input[type="text"][name="people"]').value = data.people;
 			moduleEl.querySelector('input[type="text"][name="content"]').value = data.content;
+			moduleEl.querySelector('input[type="text"][name="days"]').value = data.days;
 		},
 		onkeydown: function(event, element, elementType){
 			if(event.keyCode === 13 || event.whitch === 13){
@@ -42,11 +44,12 @@ Application.addModule('modal', function(context) {
 				var id = $.trim(moduleEl.querySelector('input[type="hidden"][name="id"]').value);
 				var people = $.trim(moduleEl.querySelector('input[type="text"][name="people"]').value);
 				var content = $.trim(moduleEl.querySelector('input[type="text"][name="content"]').value);
+				var days = $.trim(moduleEl.querySelector('input[type="text"][name="days"]').value);
 				if(!$.isEmptyObject(people) && !$.isEmptyObject(content)){
 					if(isUpdate){
-						dataService.updateItem(context, people, content, id);
+						dataService.updateItem(context, people, content, id, days);
 					}else{
-						dataService.addItem(context, people, content);
+						dataService.addItem(context, people, content, days);
 					}
 				}
 			}

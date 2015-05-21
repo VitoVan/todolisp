@@ -20,3 +20,6 @@ body{
     right: 0px;
     bottom: 6px;
 }
+td[name="days"]{
+	width: 55px !important;
+}

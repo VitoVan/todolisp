@@ -11,7 +11,8 @@ Application.addBehavior('list', function(context) {
 				var id = parseInt(element.querySelector('td[name="id"]').innerHTML);
 				var people = element.querySelector('td[name="people"]').innerHTML;
 				var content = element.querySelector('td[name="content"]').innerHTML;
-				var data = {id: id, people: people, content: content};
+				var days = element.querySelector('td[name="days"]').innerHTML;
+				var data = {id: id, people: people, content: content, days: days};
 				context.broadcast('updateButtonClick', data);
 			}
 			document.getSelection().removeAllRanges();
@@ -23,6 +24,7 @@ Application.addBehavior('list', function(context) {
 					if(parseInt(currentChild.querySelector('td[name="id"]').innerHTML) === data.id){
 						currentChild.querySelector('td[name="people"]').innerHTML = data.people;
 						currentChild.querySelector('td[name="content"]').innerHTML = data.content;
+						currentChild.querySelector('td[name="days"]').innerHTML = data.days;
 						break;
 					}
 				}
