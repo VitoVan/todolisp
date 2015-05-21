@@ -25,6 +25,18 @@ Application.addBehavior('list', function(context) {
 						currentChild.querySelector('td[name="people"]').innerHTML = data.people;
 						currentChild.querySelector('td[name="content"]').innerHTML = data.content;
 						currentChild.querySelector('td[name="days"]').innerHTML = data.days;
+						//如果是Todos页面,则变更颜色
+						if($(currentChild).data('atime')){
+							var daysPassed = (Math.round(new Date().getTime()/1000) - $(currentChild).data('atime'))/86400;
+							if(daysPassed > data.days){
+								$(currentChild).addClass('error');
+							}else if(data.days - daysPassed < 1){
+								$(currentChild).addClass('warning');
+							}else{
+								$(currentChild).removeClass('warning').removeClass('error');;
+							}
+							currentChild.querySelector('[name="days-left"]').innerHTML = (data.days - daysPassed).toFixed(2);
+						}
 						break;
 					}
 				}

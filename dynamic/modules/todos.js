@@ -59,19 +59,21 @@ Application.addModule('todos', function(context) {
 			var itemTemplateEl = moduleEl.querySelector('.item-template'),
 			newItemEl = itemTemplateEl.cloneNode(true);
 			newItemEl.style.display = 'table-row';
-			//Set Data
-			newItemEl.querySelector('[name="id"]').innerHTML = item.id;
-			newItemEl.querySelector('[name="content"]').innerHTML = item.content;
-			newItemEl.querySelector('[name="atime"]').innerHTML = new Date(item.atime*1000).format('yyyy-MM-dd hh:mm:ss');
-			newItemEl.querySelector('[name="days"]').innerHTML = item.days;
-			newItemEl.querySelector('[name="people"]').innerHTML = item.people;
-			newItemEl.querySelector('[name="state"]').checked = item.state;
 			var daysPassed = (Math.round(new Date().getTime()/1000) - item.atime)/86400;
 			if(daysPassed > item.days){
 				$(newItemEl).addClass('error');
 			}else if(item.days - daysPassed < 1){
 				$(newItemEl).addClass('warning');
 			}
+			$(newItemEl).data('atime',item.atime);
+			//Set Data
+			newItemEl.querySelector('[name="id"]').innerHTML = item.id;
+			newItemEl.querySelector('[name="content"]').innerHTML = item.content;
+			newItemEl.querySelector('[name="atime"]').innerHTML = new Date(item.atime*1000).format('yyyy-MM-dd hh:mm:ss');
+			newItemEl.querySelector('[name="days-left"]').innerHTML = (item.days - daysPassed).toFixed(2);
+			newItemEl.querySelector('[name="days"]').innerHTML = item.days;
+			newItemEl.querySelector('[name="people"]').innerHTML = item.people;
+			newItemEl.querySelector('[name="state"]').checked = item.state;
 			$(newItemEl).removeClass('item-template');
 			moduleEl.appendChild(newItemEl);
 		},

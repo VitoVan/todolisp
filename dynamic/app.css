@@ -23,3 +23,6 @@ body{
 td[name="days"]{
 	width: 55px !important;
 }
+td[name="days-left"]{
+	width: 55px !important;
+}
