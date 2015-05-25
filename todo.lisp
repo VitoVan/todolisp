@@ -29,7 +29,7 @@ STREAM (or to *JSON-OUTPUT*)."
 				:access-log-destination "log/access.log"
 				:message-log-destination "log/message.log"
 				:error-template-directory  "www/errors/"
-				:document-root "www"))
+				:document-root "www/"))
 
 ;;时间转换 http://lisptips.com/post/11649360174/the-common-lisp-and-unix-epochs
 (defvar *unix-epoch-difference*
