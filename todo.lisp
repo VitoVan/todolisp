@@ -6,7 +6,7 @@
 
 ;;复写encode-json
 (in-package :json)
-#+cl-json-clos
+
 (defmethod encode-json ((o clsql-sys::standard-db-object)
                         &optional (stream *json-output*))
   "Write the JSON representation (Object) of the STANDARD-DB-OBJECT O to

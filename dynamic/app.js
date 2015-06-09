@@ -45,6 +45,7 @@ $.simpleClone = function(obj){
     return objClone;
 }
 
+
 var Application = Box.Application;
 
 $(document).ready(function(){
